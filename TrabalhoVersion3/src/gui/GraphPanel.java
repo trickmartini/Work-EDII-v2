@@ -91,7 +91,7 @@ public class GraphPanel extends JPanel{
 		panelShowNeighbours.add(scrollPaneNeighbours, gbc);
 		
 		this.add(panelShowNeighbours, panelContrains);
-		panelShowNeighbours.setVisible(false);
+		panelShowNeighbours.setEnabled(false);
 	}
 	
 	private void addShowVerticeComponents(GridBagConstraints panelContrains) {

@@ -28,8 +28,9 @@ public class GraphPanel extends JPanel{
 	public static final int TEXTFIELD_WIDTH = 150;
 	public static final int SCROLLPANE_HEIGTH = 125;
 	public static final int SCROLLPANE_WIDTH = 150;
+	
 	private JTextField textFieldVertice1, textFieldVertice2, textFieldWeight;
-	private JButton addNew;
+	private JButton buttonAddNewVertice, buttonBFS, buttonDFS;
 	private JLabel infoLabel;
 	private JList<String> listOfVertices, listOfNeighbours;
 	private JScrollPane scrollPaneVertices, scrollPaneNeighbours;
@@ -46,7 +47,6 @@ public class GraphPanel extends JPanel{
 		panelAddNewVertice = new JPanel(new GridBagLayout());
 		panelShowVertices = new JPanel(new GridBagLayout());
 		panelShowNeighbours = new JPanel(new GridBagLayout());
-		
 		
 		// Setting the layout of the panel
 		this.setLayout(new GridBagLayout());
@@ -117,14 +117,29 @@ public class GraphPanel extends JPanel{
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		panelShowVertices.add(scrollPaneVertices, gbc);
+		
+		gbc.fill = GridBagConstraints.BOTH;// Making the Button as big as the cell
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		panelShowVertices.add(buttonBFS, gbc);
 	
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		panelShowVertices.add(buttonDFS, gbc);
+		
 		this.add(panelShowVertices, panelContrains);
 	}
 	
 	private void addAddVerticeComponents(GridBagConstraints panelContrains) {
 		// Creating the button for adding new Vertices and adding the actionlistener
-		addNew = new JButton("create");
+		buttonAddNewVertice = new JButton("create");
 		addActionListenerAddNew();
+		
+		buttonBFS = new JButton("BFS");
+		addActionListenerBFS();
+		
+		buttonDFS = new JButton("DFS");
+		addActionListenerDFS();
 		
 		// Creating the Textfields for the vertices names and weight
 		textFieldVertice1 = new JTextField();
@@ -161,15 +176,19 @@ public class GraphPanel extends JPanel{
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		panelAddNewVertice.add(textFieldWeight, gbc);
+
 		
-		gbc.gridheight = 4; // This makes the cells height of the layout as big as three cells height
-		gbc.fill = GridBagConstraints.BOTH; // Making the Button as big as the cell
+		gbc.gridwidth = 1;
+		gbc.gridheight = 5; // This makes the cells height of the layout as big as three cells height		 
+		gbc.fill = GridBagConstraints.BOTH;// Making the Button as big as the cell
 		gbc.gridx = 2;
 		gbc.gridy = 0;
-		panelAddNewVertice.add(addNew, gbc);
+		panelAddNewVertice.add(buttonAddNewVertice, gbc);
 		
 		this.add(panelAddNewVertice, panelContrains);
 	}
+	
+
 	
 
 	private void refreshVerticesList() {
@@ -185,6 +204,7 @@ public class GraphPanel extends JPanel{
 	private void refreshNeighbourList() {
 		listOfNeighbours.removeAll();
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		
 		String verticeName = listOfVertices.getSelectedValue();
 		Vertice selectedVertice = Program.findVerticeByName(verticeName);
 		if(null != selectedVertice) {
@@ -199,9 +219,13 @@ public class GraphPanel extends JPanel{
 				String weightToNeighbour = "" + adjacente.getWeight();
 				listModel.addElement(nameOfNeighbour + " (" + weightToNeighbour + UNIT + ")");
 			}
-			panelShowNeighbours.setVisible(true);
+			buttonBFS.setEnabled(true);
+			buttonDFS.setEnabled(true);
+			panelShowNeighbours.setEnabled(true);
 		} else {
-			panelShowNeighbours.setVisible(false);
+			buttonBFS.setEnabled(false);
+			buttonDFS.setEnabled(false);
+			panelShowNeighbours.setEnabled(false);
 		}
 		
 		listOfNeighbours.setModel(listModel);
@@ -209,8 +233,26 @@ public class GraphPanel extends JPanel{
 	}
 	
 
+	private void addActionListenerBFS() {
+		buttonBFS.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				infoLabel.setText(Program.BFS(listOfVertices.getSelectedValue()));
+			}
+		});
+	}
+	
+	private void addActionListenerDFS() {
+		buttonDFS.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				infoLabel.setText(Program.DFS(listOfVertices.getSelectedValue()));
+			}
+		});
+	}
+
 	private void addActionListenerAddNew() {
-		addNew.addActionListener(new ActionListener() {
+		buttonAddNewVertice.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String nameVertice1 = textFieldVertice1.getText();

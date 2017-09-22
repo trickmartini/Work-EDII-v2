@@ -11,6 +11,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -25,6 +26,8 @@ public class GraphPanel extends JPanel{
 	public static final String UNIT = "km";
 	public static final int TEXTFIELD_HEIGTH = 20;
 	public static final int TEXTFIELD_WIDTH = 150;
+	public static final int SCROLLPANE_HEIGTH = 125;
+	public static final int SCROLLPANE_WIDTH = 150;
 	private JTextField textFieldVertice1, textFieldVertice2, textFieldWeight;
 	private JButton addNew;
 	private JLabel infoLabel;
@@ -38,47 +41,19 @@ public class GraphPanel extends JPanel{
 		// Setting the size of the panel to the same size as the MainFrame
 		this.setPreferredSize(new Dimension(MainFrame.SIZE_X, MainFrame.SIZE_Y));
 
-		// Creating the button for adding new Vertices and adding the actionlistener
-		addNew = new JButton("add");
-		addActionListenerAddNew();
-		
 		infoLabel = new JLabel("Welcome!");
 
 		panelAddNewVertice = new JPanel(new GridBagLayout());
 		panelShowVertices = new JPanel(new GridBagLayout());
 		panelShowNeighbours = new JPanel(new GridBagLayout());
 		
-		scrollPaneVertices = new JScrollPane();
-		listOfVertices = new JList<>();
-		scrollPaneVertices.setViewportView(listOfVertices);
-		scrollPaneVertices.setPreferredSize(new Dimension(150, 150));
-		
-		scrollPaneNeighbours = new JScrollPane();
-		listOfNeighbours = new JList<>();
-		scrollPaneNeighbours.setViewportView(listOfNeighbours);
-		scrollPaneNeighbours.setPreferredSize(new Dimension(150, 150));
-		
-		
-		addActionListenerList();
-		refreshVerticesList();
-		refreshNeighbourList();
-		
-		// Creating the Textfields for the vertices names and weight
-		textFieldVertice1 = new JTextField();
-		textFieldVertice1.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
-		
-		textFieldVertice2 = new JTextField();		
-		textFieldVertice2.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
-		
-		textFieldWeight = new JTextField();
-		textFieldWeight.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
 		
 		// Setting the layout of the panel
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.ipadx = 10;
+		gbc.ipady = 10;
 		
-		// Adding all components to the panel on the specified location
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		addAddVerticeComponents(gbc);
@@ -86,10 +61,12 @@ public class GraphPanel extends JPanel{
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		addShowVerticeComponents(gbc);
+		refreshVerticesList();
 		
 		gbc.gridx = 3;
 		gbc.gridy = 0;
 		addShowNeighbours(gbc);
+		refreshNeighbourList();
 
 		gbc.gridwidth = 3; // This makes the cells width of the layout as big as three cells width
 		gbc.gridx = 0;
@@ -98,6 +75,11 @@ public class GraphPanel extends JPanel{
 	}
 	
 	private void addShowNeighbours(GridBagConstraints panelContrains) {
+		scrollPaneNeighbours = new JScrollPane();
+		listOfNeighbours = new JList<>();
+		scrollPaneNeighbours.setViewportView(listOfNeighbours);
+		scrollPaneNeighbours.setPreferredSize(new Dimension(SCROLLPANE_WIDTH, SCROLLPANE_HEIGTH));
+		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
 		gbc.gridx = 0;
@@ -113,6 +95,19 @@ public class GraphPanel extends JPanel{
 	}
 	
 	private void addShowVerticeComponents(GridBagConstraints panelContrains) {
+		scrollPaneVertices = new JScrollPane();
+		listOfVertices = new JList<>();
+		scrollPaneVertices.setViewportView(listOfVertices);
+		scrollPaneVertices.setPreferredSize(new Dimension(SCROLLPANE_WIDTH, SCROLLPANE_HEIGTH));
+		
+		// This happens every time something new gets selected in the List
+		listOfVertices.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				refreshNeighbourList();
+			}
+		});
+		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
 		gbc.gridx = 0;
@@ -127,6 +122,20 @@ public class GraphPanel extends JPanel{
 	}
 	
 	private void addAddVerticeComponents(GridBagConstraints panelContrains) {
+		// Creating the button for adding new Vertices and adding the actionlistener
+		addNew = new JButton("create");
+		addActionListenerAddNew();
+		
+		// Creating the Textfields for the vertices names and weight
+		textFieldVertice1 = new JTextField();
+		textFieldVertice1.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
+		
+		textFieldVertice2 = new JTextField();		
+		textFieldVertice2.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
+		
+		textFieldWeight = new JTextField();
+		textFieldWeight.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
+				
 		GridBagConstraints gbc = new GridBagConstraints();
 		
 		gbc.gridx = 0;
@@ -181,9 +190,13 @@ public class GraphPanel extends JPanel{
 		if(null != selectedVertice) {
 			ArrayList<Adjacente> neighbours = selectedVertice.getAdjacentes();
 			for (Adjacente adjacente : neighbours) {
-				Vertice neighbour = adjacente.getNeighbourOf(selectedVertice);
+				Vertice neighbour = adjacente.getV1();
+				if(neighbour.equals(selectedVertice)) {
+					neighbour = adjacente.getV2();
+				}
+				
 				String nameOfNeighbour = neighbour.getName();
-				String weightToNeighbour = "" + adjacente.getTempo();
+				String weightToNeighbour = "" + adjacente.getWeight();
 				listModel.addElement(nameOfNeighbour + " (" + weightToNeighbour + UNIT + ")");
 			}
 			panelShowNeighbours.setVisible(true);
@@ -195,22 +208,18 @@ public class GraphPanel extends JPanel{
 		listOfNeighbours.setSelectedIndex(-1);
 	}
 	
-	private void addActionListenerList() {
-		listOfVertices.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				refreshNeighbourList();
-			}
-		});
-	}
 
-	
 	private void addActionListenerAddNew() {
 		addNew.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String nameVertice1 = textFieldVertice1.getText();
 				String nameVertice2 = textFieldVertice2.getText();
+				
+				if(nameVertice1.equals(nameVertice2)) {
+					JOptionPane.showMessageDialog(null, "You can't say that a vertice is adjacent to itself!", "Warning", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				String weight = textFieldWeight.getText();
 				Program.addNewConnection(nameVertice1, nameVertice2, weight);
 				infoLabel.setText("Added connection from " + nameVertice1 + " to " + nameVertice2 + " with weight " + weight + ".");

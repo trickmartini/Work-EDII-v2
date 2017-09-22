@@ -5,6 +5,8 @@ package graph;
 
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import gui.MainFrame;
 
 /**
@@ -31,7 +33,16 @@ public class Program {
 			vertices.add(vertice2);
 		}
 		
-		vertice1.addAdjacento(vertice2, Integer.parseInt(weight));
+		double weightNumber = 0;
+		try{
+			weight = weight.replaceAll(",", ".");
+			weightNumber = Double.parseDouble(weight);
+		} catch(NumberFormatException e) {
+			JOptionPane.showMessageDialog(null, "Weight has to be a valid number!", "Warning", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		vertice1.addAdjacento(vertice2, weightNumber) ;
 	}
 	
 	public static void removeVertice(Vertice vertice) {

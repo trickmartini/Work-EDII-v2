@@ -13,22 +13,14 @@ public class Vertice {
 		this.name = name;
 	}
 	
-	public void addAdjacento(Vertice vertice, double tempo) {
-		this.adjacentes.add(new Adjacente(this, vertice, tempo));
-		vertice.addOnewayAdjacento(this, tempo);			
+	public void addAdjacento(Vertice vertice, double weight) {
+		this.adjacentes.add(new Adjacente(this, vertice, weight));
+		vertice.addOnewayAdjacento(this, weight);			
 		
 	}
 	
-	public String getName() {
-		return name;
-	}
-	
-	public ArrayList<Adjacente> getAdjacentes() {
-		return adjacentes;
-	}
-	
-	private void addOnewayAdjacento(Vertice vertice, double tempo) {
-		this.adjacentes.add(new Adjacente(this, vertice, tempo));
+	private void addOnewayAdjacento(Vertice vertice, double weight) {
+		this.adjacentes.add(new Adjacente(this, vertice, weight));
 	}
 
 	public String printAdjacente() {
@@ -37,6 +29,14 @@ public class Vertice {
 			content.append(adjacente.toString()).append(",");
 		}
 		return content.toString();
+	}
+	
+	public ArrayList<Adjacente> getAdjacentes() {
+		return adjacentes;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	@Override

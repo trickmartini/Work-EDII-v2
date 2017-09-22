@@ -78,7 +78,7 @@ public class GraphPanel extends JPanel{
 		scrollPaneNeighbours = new JScrollPane();
 		listOfNeighbours = new JList<>();
 		scrollPaneNeighbours.setViewportView(listOfNeighbours);
-		scrollPaneNeighbours.setPreferredSize(new Dimension(SCROLLPANE_WIDTH, SCROLLPANE_HEIGTH));
+		scrollPaneNeighbours.setPreferredSize(new Dimension(SCROLLPANE_WIDTH, SCROLLPANE_HEIGTH + 50));
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
@@ -89,6 +89,7 @@ public class GraphPanel extends JPanel{
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		panelShowNeighbours.add(scrollPaneNeighbours, gbc);
+		
 		
 		this.add(panelShowNeighbours, panelContrains);
 		panelShowNeighbours.setEnabled(false);

@@ -3,8 +3,8 @@ package gui;
 import javax.swing.JFrame;
 
 public class MainFrame {
-	public final static int SIZE_X = 500;
-	public final static int SIZE_Y = 200;
+	public final static int SIZE_X = 700;
+	public final static int SIZE_Y = 400;
 	private JFrame frame;
 	
 	public MainFrame() {

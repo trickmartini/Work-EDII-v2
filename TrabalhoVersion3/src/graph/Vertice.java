@@ -23,6 +23,10 @@ public class Vertice {
 		return name;
 	}
 	
+	public ArrayList<Adjacente> getAdjacentes() {
+		return adjacentes;
+	}
+	
 	private void addOnewayAdjacento(Vertice vertice, double tempo) {
 		this.adjacentes.add(new Adjacente(this, vertice, tempo));
 	}
@@ -39,6 +43,5 @@ public class Vertice {
 	public String toString() {
 		return name;
 	}
-	
-	
+
 }

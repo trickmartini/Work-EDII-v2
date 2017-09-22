@@ -13,6 +13,14 @@ public class Adjacente {
 		this.v2 = v2;
 	}
 	
+	public Vertice getNeighbourOf(Vertice v) {
+		return v1.equals(v) ? v2 : v1;
+	}
+	
+	public double getTempo() {
+		return tempo;
+	}
+	
 	@Override
 	public String toString() {
 		return  "(" + v1.toString() + "," + v2.toString() + ":" +tempo + ")";

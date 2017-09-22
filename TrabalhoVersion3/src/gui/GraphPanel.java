@@ -189,8 +189,10 @@ public class GraphPanel extends JPanel{
 	}
 	
 
-	
-
+	/**
+	 * First removing all items from the list of Vertices.
+	 * Than adding all Vertices that were created to the list.
+	 */
 	private void refreshVerticesList() {
 		listOfVertices.removeAll();
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
@@ -201,6 +203,11 @@ public class GraphPanel extends JPanel{
 		listOfVertices.setSelectedIndex(-1);
 	}
 	
+	/**
+	 * First removing all items from the list of Neighbours.
+	 * Than adding all neighbours of the currently selected Vertice.
+	 * Enables/Disables DFS-BFS Button so that it can only be clicked when a Vertice is selected.
+	 */
 	private void refreshNeighbourList() {
 		listOfNeighbours.removeAll();
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
@@ -233,6 +240,11 @@ public class GraphPanel extends JPanel{
 	}
 	
 
+	/**
+	 * Adding the Actionlistener to the BFS button.
+	 * Calls the function from the Class "Programm" with the selected
+	 * Vertice and prints the resulting message into the infoLabel.
+	 */
 	private void addActionListenerBFS() {
 		buttonBFS.addActionListener(new ActionListener() {
 			@Override
@@ -242,6 +254,11 @@ public class GraphPanel extends JPanel{
 		});
 	}
 	
+	/**
+	 * Adding the Actionlistener to the DFS button.
+	 * Calls the function from the Class "Programm" with the selected
+	 * Vertice and prints the resulting message into the infoLabel.
+	 */
 	private void addActionListenerDFS() {
 		buttonDFS.addActionListener(new ActionListener() {
 			@Override
@@ -251,6 +268,12 @@ public class GraphPanel extends JPanel{
 		});
 	}
 
+	/**
+	 * Adding the Actionlistener to the Create new Vertice button.
+	 * Gets both names from the Textfields and checks if they are not the same. 
+	 * If they are the same, a Error Box will popup.
+	 * A new Adjacent will be created and the infoLabel and Verticle list are updated.
+	 */
 	private void addActionListenerAddNew() {
 		buttonAddNewVertice.addActionListener(new ActionListener() {
 			@Override

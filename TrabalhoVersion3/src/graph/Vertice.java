@@ -1,16 +1,16 @@
+package graph;
 import java.util.ArrayList;
 
 public class Vertice {
-	private String nome = "Default";
+	private String name = "Default";
 	ArrayList<Adjacente> adjacentes = new ArrayList<Adjacente>();
-	
 	
 	public Vertice() {
 		
 	}
 	
-	public Vertice(String nome ) {
-		this.nome = nome;
+	public Vertice(String name ) {
+		this.name = name;
 	}
 	
 	public void addAdjacento(Vertice vertice, double tempo) {
@@ -33,7 +33,7 @@ public class Vertice {
 	
 	@Override
 	public String toString() {
-		return nome;
+		return name;
 	}
 	
 	

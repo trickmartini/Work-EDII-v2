@@ -1,4 +1,4 @@
-
+package graph;
 public class Adjacente {
 	private double tempo;
 	private Vertice v1, v2;

@@ -75,12 +75,13 @@ public class Program {
         visited[indexOfVertice] = true;
         queue.add(indexOfVertice);
  
-        while (queue.size() != 0)
+        while (queue.size() != 0) // as long as there are still nodes in the queue
         {
         	int index = queue.poll(); // remove the first from the queue
         	Vertice vertice = vertices.get(index);
             result += vertice.getName() + " ";
 
+            // getting all neighbours of the vertice and saving them into the array adj
             ArrayList<Adjacente> neighbours  = vertice.getAdjacentes();
             Vertice[] adj = new Vertice[neighbours.size()];
             int counter = 0;
@@ -88,6 +89,7 @@ public class Program {
 				adj[counter++] = adjacente.getV1().equals(vertice) ? adjacente.getV2() : adjacente.getV1();
 			}
 
+            // visit all neighbours of the vertice and mark them as visited. Add them to the queue too
             for (int i = 0; i < adj.length; i++){
                 int n = vertices.indexOf(findVerticeByName(adj[i].getName()));
                 if (!visited[n])
@@ -102,7 +104,6 @@ public class Program {
     }
 	
 	
-	// The function to do DFS traversal. It uses recursive DFSUtil()
     public static String DFS(String start)
     {
     	StringBuilder builder = new StringBuilder("DFS visited: ");
@@ -117,15 +118,15 @@ public class Program {
         return builder.toString();
     }
 	
-	
-	// A function used by DFS
-    private static void DFSUtil(int v, boolean visited[], StringBuilder builder)
+    private static void DFSUtil(int startIndex, boolean visited[], StringBuilder builder)
     {
-    	Vertice vertice = vertices.get(v);
+    	Vertice vertice = vertices.get(startIndex);
+    	
         // Mark the current node as visited
-        visited[v] = true;
-        builder.append(vertice.getName()).append(" "); 
+        visited[startIndex] = true;
+        builder.append(vertice.getName()).append(" "); // add the current node to the result
  
+        // getting all neighbours of the vertice and saving them into the array adj
         ArrayList<Adjacente> neighbours  = vertice.getAdjacentes();
         Vertice[] adj = new Vertice[neighbours.size()];
         int counter = 0;
@@ -133,6 +134,7 @@ public class Program {
 			adj[counter++] = adjacente.getV1().equals(vertice) ? adjacente.getV2() : adjacente.getV1();
 		}
         
+        // visit all neighbours of the vertice and visit them if not yet visited (recursive!)
         for (int i = 0; i < adj.length; i++){
             int n = vertices.indexOf(findVerticeByName(adj[i].getName()));
             if (!visited[n]){

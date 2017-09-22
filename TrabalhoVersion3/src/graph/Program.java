@@ -24,6 +24,16 @@ public class Program {
 	}
 	
 	public static void addNewConnection(String nameVertice1, String nameVertice2, String weight) {
+		
+		double weightNumber = 0;
+		try{
+			weight = weight.replaceAll(",", ".");
+			weightNumber = Double.parseDouble(weight);
+		} catch(NumberFormatException e) {
+			JOptionPane.showMessageDialog(null, "Weight has to be a valid number!", "Warning", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
 		Vertice vertice1 = findVerticeByName(nameVertice1);
 		if(null == vertice1) {
 			vertice1 = new Vertice(nameVertice1);
@@ -34,15 +44,6 @@ public class Program {
 		if(null == vertice2) {
 			vertice2 = new Vertice(nameVertice2);			
 			vertices.add(vertice2);
-		}
-		
-		double weightNumber = 0;
-		try{
-			weight = weight.replaceAll(",", ".");
-			weightNumber = Double.parseDouble(weight);
-		} catch(NumberFormatException e) {
-			JOptionPane.showMessageDialog(null, "Weight has to be a valid number!", "Warning", JOptionPane.ERROR_MESSAGE);
-			return;
 		}
 		
 		vertice1.addAdjacento(vertice2, weightNumber) ;

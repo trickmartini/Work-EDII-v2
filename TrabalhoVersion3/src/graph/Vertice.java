@@ -9,7 +9,7 @@ public class Vertice {
 		
 	}
 	
-	public Vertice(String name ) {
+	public Vertice(String name) {
 		this.name = name;
 	}
 	
@@ -17,6 +17,10 @@ public class Vertice {
 		this.adjacentes.add(new Adjacente(this, vertice, tempo));
 		vertice.addOnewayAdjacento(this, tempo);			
 		
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	private void addOnewayAdjacento(Vertice vertice, double tempo) {

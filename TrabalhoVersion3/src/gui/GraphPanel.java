@@ -6,12 +6,14 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import graph.Program;
 import graph.Vertice;
@@ -22,8 +24,7 @@ public class GraphPanel extends JPanel{
 	private JTextField textFieldVertice1, textFieldVertice2, textFieldWeight;
 	private JButton addNew;
 	private JLabel infoLabel;
-	private JComboBox<String> comboBox;
-	private JTable table;
+	private JList<String> listOfVertices;
 	
 	
 	public GraphPanel() {
@@ -35,8 +36,10 @@ public class GraphPanel extends JPanel{
 		addActionListenerAddNew();
 		
 		infoLabel = new JLabel("Welcome!");
-		comboBox = new JComboBox<>();
-		refreshComboBox();
+
+		listOfVertices = new JList<>();
+		addActionListenerList();
+		refreshList();
 		
 		// Creating the Textfields for the vertices names and weight
 		textFieldVertice1 = new JTextField();
@@ -55,57 +58,89 @@ public class GraphPanel extends JPanel{
 		 * gridx = 1 and gridy = 0 would be the object right from the object that is in the upper left corner
 		 * gridx = 0 and gridy = 1 would be the object below the object that is in the upper left corner
 		 */
-		
-		gbc.gridwidth = 3; // This makes the cells width of the layout as big as three cells width
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		this.add(infoLabel, gbc);
-		
-		gbc.gridwidth = 1;
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		this.add(new JLabel("Vertice 1 name: "), gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		this.add(textFieldVertice1, gbc);
+		addAddVerticeComponents(gbc);
 		
 		gbc.gridx = 0;
-		gbc.gridy = 2;
-		this.add(new JLabel("Vertice 2 name: "), gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		this.add(textFieldVertice2, gbc);
+		gbc.gridy = 4;
+		this.add(new JLabel("\n"), gbc);
 		
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		this.add(new JLabel("weight: "), gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-		this.add(textFieldWeight, gbc);
-		
-		gbc.gridheight = 3; // This makes the cells height of the layout as big as three cells height
-		gbc.fill = GridBagConstraints.BOTH; // Making the Button as big as the cell
-		gbc.gridx = 2;
-		gbc.gridy = 1;
-		this.add(addNew, gbc);
-		
-		
-		gbc.gridwidth = 1;
 		gbc.gridx = 0;
 		gbc.gridy = 5;
 		this.add(new JLabel("Vertices: "), gbc);
+		
+		gbc.gridwidth = 2;
 		gbc.gridx = 1;
 		gbc.gridy = 5;
-		this.add(comboBox, gbc);
+		this.add(listOfVertices, gbc);
+		
+		gbc.gridwidth = 1;
+		gbc.gridx = 0;
+		gbc.gridy = 6;
+		this.add(new JLabel("\n"), gbc);
+		
+
+		gbc.gridwidth = 4; // This makes the cells width of the layout as big as three cells width
+
+		gbc.gridx = 0;
+		gbc.gridy = 7;
+		this.add(infoLabel, gbc);
+		
+		gbc.gridheight = 1; 
+		gbc.gridwidth = 1;
 		
 	}
 	
-	private void refreshComboBox() {
-		comboBox.removeAllItems();
-		for (Vertice vertice : Program.getVertices()) {
-			comboBox.addItem(vertice.getName());
-		}
+	private void addAddVerticeComponents(GridBagConstraints gbc) {
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		
+		this.add(new JLabel("Vertice 1 name: "), gbc); // Position y0 x0
+		
+		gbc.gridx++;
+		this.add(textFieldVertice1, gbc); // Position y0 x1
+		
+		gbc.gridx--;
+		gbc.gridy++;
+		this.add(new JLabel("Vertice 2 name: "), gbc);// Position y1 x0
+		
+		gbc.gridx++;
+		this.add(textFieldVertice2, gbc);// Position y1 x1
+		
+		gbc.gridx--;
+		gbc.gridy++;
+		this.add(new JLabel("weight: "), gbc);// Position y2 x0
+		
+		gbc.gridx++;
+		this.add(textFieldWeight, gbc);// Position y2 x1
+		
+		gbc.gridheight = 3; // This makes the cells height of the layout as big as three cells height
+		gbc.fill = GridBagConstraints.BOTH; // Making the Button as big as the cell
+		gbc.gridx++;
+		gbc.gridy -= 2;
+		this.add(addNew, gbc);// Position y1 x2 (3 cells height)
 	}
+	
+
+	private void refreshList() {
+		listOfVertices.removeAll();
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		for (Vertice vertice : Program.getVertices()) {
+			listModel.addElement(vertice.getName());
+		}
+		listOfVertices.setModel(listModel);
+		listOfVertices.setSelectedIndex(-1);
+	}
+	
+	private void addActionListenerList() {
+		listOfVertices.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				
+				
+			}
+		});
+	}
+
 	
 	private void addActionListenerAddNew() {
 		addNew.addActionListener(new ActionListener() {
@@ -116,7 +151,7 @@ public class GraphPanel extends JPanel{
 				String weight = textFieldWeight.getText();
 				Program.addNewConnection(nameVertice1, nameVertice2, weight);
 				infoLabel.setText("Added connection from " + nameVertice1 + " to " + nameVertice2 + " with weight " + weight + ".");
-				refreshComboBox();
+				refreshList();
 			}
 		});
 	}

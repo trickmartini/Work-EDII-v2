@@ -21,32 +21,24 @@ import javax.swing.event.ListSelectionListener;
 import graph.Adjacente;
 import graph.Program;
 import graph.Vertice;
+import gui.buttons.ButtonBFS;
+import gui.buttons.ButtonDFS;
+import gui.buttons.ButtonNewVertice;
+import gui.labels.OutputLabel;
+import gui.lists.ListOfNeighbours;
+import gui.lists.ListOfVertices;
+import gui.panels.PanelListNeigbour;
+import gui.panels.PanelListVertice;
+import gui.panels.PanelNewVertice;
+import gui.textfields.TextFieldHandler;
 
 public class GraphPanel extends JPanel{
-	public static final String UNIT = "km";
-	public static final int TEXTFIELD_HEIGTH = 20;
-	public static final int TEXTFIELD_WIDTH = 150;
-	public static final int SCROLLPANE_HEIGTH = 125;
-	public static final int SCROLLPANE_WIDTH = 150;
-	
-	private JTextField textFieldVertice1, textFieldVertice2, textFieldWeight;
-	private JButton buttonAddNewVertice, buttonBFS, buttonDFS;
-	private JLabel infoLabel;
-	private JList<String> listOfVertices, listOfNeighbours;
-	private JScrollPane scrollPaneVertices, scrollPaneNeighbours;
-	
-	private JPanel panelAddNewVertice, panelShowVertices, panelShowNeighbours;
-	
+	private static final long serialVersionUID = -1187790095325404798L;
+	public static final String UNIT = "h";
 	
 	public GraphPanel() {
 		// Setting the size of the panel to the same size as the MainFrame
 		this.setPreferredSize(new Dimension(MainFrame.SIZE_X, MainFrame.SIZE_Y));
-
-		infoLabel = new JLabel("Welcome!");
-
-		panelAddNewVertice = new JPanel(new GridBagLayout());
-		panelShowVertices = new JPanel(new GridBagLayout());
-		panelShowNeighbours = new JPanel(new GridBagLayout());
 		
 		// Setting the layout of the panel
 		this.setLayout(new GridBagLayout());
@@ -56,242 +48,21 @@ public class GraphPanel extends JPanel{
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		addAddVerticeComponents(gbc);
+		this.add(new PanelNewVertice(), gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		addShowVerticeComponents(gbc);
-		refreshVerticesList();
-		
+		this.add(new PanelListVertice(), gbc);
+
 		gbc.gridx = 3;
 		gbc.gridy = 0;
-		addShowNeighbours(gbc);
-		refreshNeighbourList();
+		this.add(new PanelListNeigbour(), gbc);
 
 		gbc.gridwidth = 3; // This makes the cells width of the layout as big as three cells width
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		this.add(infoLabel, gbc);
-	}
-	
-	private void addShowNeighbours(GridBagConstraints panelContrains) {
-		scrollPaneNeighbours = new JScrollPane();
-		listOfNeighbours = new JList<>();
-		scrollPaneNeighbours.setViewportView(listOfNeighbours);
-		scrollPaneNeighbours.setPreferredSize(new Dimension(SCROLLPANE_WIDTH, SCROLLPANE_HEIGTH + 50));
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panelShowNeighbours.add(new JLabel("Adjacent to: "), gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		panelShowNeighbours.add(scrollPaneNeighbours, gbc);
-		
-		
-		this.add(panelShowNeighbours, panelContrains);
-		panelShowNeighbours.setEnabled(false);
-	}
-	
-	private void addShowVerticeComponents(GridBagConstraints panelContrains) {
-		scrollPaneVertices = new JScrollPane();
-		listOfVertices = new JList<>();
-		scrollPaneVertices.setViewportView(listOfVertices);
-		scrollPaneVertices.setPreferredSize(new Dimension(SCROLLPANE_WIDTH, SCROLLPANE_HEIGTH));
-		
-		// This happens every time something new gets selected in the List
-		listOfVertices.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				refreshNeighbourList();
-			}
-		});
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panelShowVertices.add(new JLabel("Vertices: "), gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		panelShowVertices.add(scrollPaneVertices, gbc);
-		
-		gbc.fill = GridBagConstraints.BOTH;// Making the Button as big as the cell
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		panelShowVertices.add(buttonBFS, gbc);
-	
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		panelShowVertices.add(buttonDFS, gbc);
-		
-		this.add(panelShowVertices, panelContrains);
-	}
-	
-	private void addAddVerticeComponents(GridBagConstraints panelContrains) {
-		// Creating the button for adding new Vertices and adding the actionlistener
-		buttonAddNewVertice = new JButton("create");
-		addActionListenerAddNew();
-		
-		buttonBFS = new JButton("BFS");
-		addActionListenerBFS();
-		
-		buttonDFS = new JButton("DFS");
-		addActionListenerDFS();
-		
-		// Creating the Textfields for the vertices names and weight
-		textFieldVertice1 = new JTextField();
-		textFieldVertice1.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
-		
-		textFieldVertice2 = new JTextField();		
-		textFieldVertice2.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
-		
-		textFieldWeight = new JTextField();
-		textFieldWeight.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
-				
-		GridBagConstraints gbc = new GridBagConstraints();
-		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panelAddNewVertice.add(new JLabel("Vertice 1 name: "), gbc); 
-		
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		panelAddNewVertice.add(textFieldVertice1, gbc); 
-		
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		panelAddNewVertice.add(new JLabel("Vertice 2 name: "), gbc);
-		
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		panelAddNewVertice.add(textFieldVertice2, gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		panelAddNewVertice.add(new JLabel("weight: "), gbc);
-		
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		panelAddNewVertice.add(textFieldWeight, gbc);
-
-		
-		gbc.gridwidth = 1;
-		gbc.gridheight = 5; // This makes the cells height of the layout as big as three cells height		 
-		gbc.fill = GridBagConstraints.BOTH;// Making the Button as big as the cell
-		gbc.gridx = 2;
-		gbc.gridy = 0;
-		panelAddNewVertice.add(buttonAddNewVertice, gbc);
-		
-		this.add(panelAddNewVertice, panelContrains);
+		this.add(OutputLabel.getLabel(), gbc);
 	}
 	
 
-	/**
-	 * First removing all items from the list of Vertices.
-	 * Than adding all Vertices that were created to the list.
-	 */
-	private void refreshVerticesList() {
-		listOfVertices.removeAll();
-		DefaultListModel<String> listModel = new DefaultListModel<String>();
-		for (Vertice vertice : Program.getVertices()) {
-			listModel.addElement(vertice.getName());
-		}
-		listOfVertices.setModel(listModel);
-		listOfVertices.setSelectedIndex(-1);
-	}
-	
-	/**
-	 * First removing all items from the list of Neighbours.
-	 * Than adding all neighbours of the currently selected Vertice.
-	 * Enables/Disables DFS-BFS Button so that it can only be clicked when a Vertice is selected.
-	 */
-	private void refreshNeighbourList() {
-		listOfNeighbours.removeAll();
-		DefaultListModel<String> listModel = new DefaultListModel<String>();
-		
-		String verticeName = listOfVertices.getSelectedValue();
-		Vertice selectedVertice = Program.findVerticeByName(verticeName);
-		if(null != selectedVertice) {
-			ArrayList<Adjacente> neighbours = selectedVertice.getAdjacentes();
-			for (Adjacente adjacente : neighbours) {
-				Vertice neighbour = adjacente.getV1();
-				if(neighbour.equals(selectedVertice)) {
-					neighbour = adjacente.getV2();
-				}
-				
-				String nameOfNeighbour = neighbour.getName();
-				String weightToNeighbour = "" + adjacente.getWeight();
-				listModel.addElement(nameOfNeighbour + " (" + weightToNeighbour + UNIT + ")");
-			}
-			buttonBFS.setEnabled(true);
-			buttonDFS.setEnabled(true);
-			panelShowNeighbours.setEnabled(true);
-		} else {
-			buttonBFS.setEnabled(false);
-			buttonDFS.setEnabled(false);
-			panelShowNeighbours.setEnabled(false);
-		}
-		
-		listOfNeighbours.setModel(listModel);
-		listOfNeighbours.setSelectedIndex(-1);
-	}
-	
-
-	/**
-	 * Adding the Actionlistener to the BFS button.
-	 * Calls the function from the Class "Programm" with the selected
-	 * Vertice and prints the resulting message into the infoLabel.
-	 */
-	private void addActionListenerBFS() {
-		buttonBFS.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				infoLabel.setText(Program.BFS(listOfVertices.getSelectedValue()));
-			}
-		});
-	}
-	
-	/**
-	 * Adding the Actionlistener to the DFS button.
-	 * Calls the function from the Class "Programm" with the selected
-	 * Vertice and prints the resulting message into the infoLabel.
-	 */
-	private void addActionListenerDFS() {
-		buttonDFS.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				infoLabel.setText(Program.DFS(listOfVertices.getSelectedValue()));
-			}
-		});
-	}
-
-	/**
-	 * Adding the Actionlistener to the Create new Vertice button.
-	 * Gets both names from the Textfields and checks if they are not the same. 
-	 * If they are the same, a Error Box will popup.
-	 * A new Adjacent will be created and the infoLabel and Verticle list are updated.
-	 */
-	private void addActionListenerAddNew() {
-		buttonAddNewVertice.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String nameVertice1 = textFieldVertice1.getText();
-				String nameVertice2 = textFieldVertice2.getText();
-				
-				if(nameVertice1.equals(nameVertice2)) {
-					JOptionPane.showMessageDialog(null, "You can't say that a vertice is adjacent to itself!", "Warning", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				String weight = textFieldWeight.getText();
-				Program.addNewConnection(nameVertice1, nameVertice2, weight);
-				infoLabel.setText("Added connection from " + nameVertice1 + " to " + nameVertice2 + " with weight " + weight + ".");
-				refreshVerticesList();
-			}
-		});
-	}
-	
 }

@@ -17,6 +17,7 @@ public class MainFrame {
 		frame.setSize(SIZE_X, SIZE_Y);
 		frame.add(new GraphPanel());
 		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
 	

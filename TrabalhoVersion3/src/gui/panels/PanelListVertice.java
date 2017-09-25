@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import gui.buttons.ButtonBFS;
 import gui.buttons.ButtonDFS;
+import gui.buttons.ButtonDijkstra;
 import gui.lists.ListOfVertices;
 
 
@@ -39,5 +40,6 @@ public class PanelListVertice extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		this.add(new ButtonDFS(), gbc);
+
 	}
 }

@@ -7,7 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 
-import graph.Program;
+import graph.GraphAlgo;
 import gui.labels.OutputLabel;
 import gui.lists.ListOfVertices;
 
@@ -30,7 +30,7 @@ public class ButtonBFS extends JButton {
 				JList<String> list = ListOfVertices.getList();
 				String selectedValue = list.getSelectedValue();
 				if(null != selectedValue) {
-					String result = Program.BFS(list.getSelectedValue());
+					String result = GraphAlgo.BFS(list.getSelectedValue());
 					OutputLabel.getLabel().setText(result);					
 				} else {
 					JOptionPane.showMessageDialog(null, "Select the starting vertice to excecute the BFS.", "Information", JOptionPane.INFORMATION_MESSAGE);

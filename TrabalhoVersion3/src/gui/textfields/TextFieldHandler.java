@@ -10,7 +10,7 @@ public class TextFieldHandler {
 	public static final int TEXTFIELD_HEIGTH = 20;
 	public static final int TEXTFIELD_WIDTH = 150;
 	
-	public static JTextField vertice1, vertice2, weight;
+	private static JTextField vertice1, vertice2, weight, distance1, distance2;
 	
 	private TextFieldHandler() {
 		
@@ -38,5 +38,21 @@ public class TextFieldHandler {
 			weight.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
 		}
 		return weight;
+	}
+	
+	public static JTextField getDistance1() {
+		if(null == distance1) {
+			distance1 = new JTextField();
+			distance1.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
+		}
+		return distance1;
+	}
+	
+	public static JTextField getDistance2() {
+		if(null == distance2) {
+			distance2 = new JTextField();
+			distance2.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGTH));
+		}
+		return distance2;
 	}
 }

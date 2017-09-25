@@ -27,6 +27,7 @@ import gui.buttons.ButtonNewVertice;
 import gui.labels.OutputLabel;
 import gui.lists.ListOfNeighbours;
 import gui.lists.ListOfVertices;
+import gui.panels.PanelDistance;
 import gui.panels.PanelListNeigbour;
 import gui.panels.PanelListVertice;
 import gui.panels.PanelNewVertice;
@@ -58,9 +59,14 @@ public class GraphPanel extends JPanel{
 		gbc.gridy = 0;
 		this.add(new PanelListNeigbour(), gbc);
 
-		gbc.gridwidth = 3; // This makes the cells width of the layout as big as three cells width
+		gbc.gridwidth = 4;// This makes the cells width of the layout as big as three cells width
 		gbc.gridx = 0;
 		gbc.gridy = 1;
+		this.add(new PanelDistance(), gbc);
+		
+		 
+		gbc.gridx = 0;
+		gbc.gridy = 2;
 		this.add(OutputLabel.getLabel(), gbc);
 	}
 	

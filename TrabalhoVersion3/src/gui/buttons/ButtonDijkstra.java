@@ -20,7 +20,7 @@ public class ButtonDijkstra extends JButton {
 	private static final long serialVersionUID = 102746757120517599L;
 
 	public ButtonDijkstra() {
-		super("Go");
+		super("Calculate");
 		
 		this.addActionListener(new ActionListener() {
 			@Override
@@ -39,9 +39,8 @@ public class ButtonDijkstra extends JButton {
 					return;
 				}
 				
-				double shortestDistance = GraphAlgo.startDijkstra(start, end);
-				OutputLabel.getLabel().setText("The fastest route from " + start.getName() + " to " + end.getName()
-						+ " is " + shortestDistance + GraphPanel.UNIT + ".");
+				String message = GraphAlgo.startDijkstra(start, end);
+				OutputLabel.getLabel().setText(message);
 			}
 		});
 	}

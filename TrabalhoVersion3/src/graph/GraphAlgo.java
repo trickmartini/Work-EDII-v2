@@ -4,15 +4,12 @@
 package graph;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author DanielFortunati
- *
- */
+import gui.GraphPanel;
+
 public class GraphAlgo {
 
 	private GraphAlgo(){
@@ -91,7 +88,7 @@ public class GraphAlgo {
         }
     }
 
-    public static double startDijkstra(Vertice O, Vertice  T) {
+    public static String startDijkstra(Vertice O, Vertice  T) {
     	ArrayList<Vertice> vertices = Program.getVertices();
     	Double[] shortestDistance = new Double[vertices.size()];
     	for (int i = 0; i < shortestDistance.length; i++) {
@@ -100,47 +97,75 @@ public class GraphAlgo {
     	boolean[] visited = new boolean[vertices.size()];
     	
     	shortestDistance[vertices.indexOf(O)] = 0d;
-
-    	double shortest = DIJKSRA(O, T, visited, shortestDistance, vertices);
-
-    	return shortest;
+    	int[] parent = new int[vertices.size()];
+    	parent[0] = -1;
+    	StringBuilder content = new StringBuilder("Shortest path from '"+ O.getName() + "' to '" + T.getName() + "' is '");
+    	content.append(O.getName() + " - ");
+    	double shortest = DIJKSRA(O, T, visited, shortestDistance, vertices, parent, content);
+    	
+    	printPath(parent, vertices.indexOf(T), vertices, content);
+    	
+    	String result = content.toString().substring(0 , content.length() - 3);
+    	result += "' and takes " + shortest + GraphPanel.UNIT + ".";
+    	return result;
     }
     
-    private static double DIJKSRA(Vertice O, Vertice  T, boolean[] visited, Double[] shortestDistance, ArrayList<Vertice> vertices) {
+    private static void printPath(int[] parent, int j, ArrayList<Vertice> vertices, StringBuilder content) {
+    	// stopping the recursion when back at the parent
+        if (parent[j] == -1)
+            return;
+
+        // going into the child vertice
+        printPath(parent, parent[j], vertices, content);
+
+        // appending the name of the vertice to the string
+        content.append(vertices.get(j).getName()).append(" - ");
+    }
+ 
+ 
+    private static double DIJKSRA(Vertice O, Vertice  T, boolean[] visited, Double[] shortestDistance, ArrayList<Vertice> vertices, int[] parent, StringBuilder content) {
     	int indexOfCurrent = vertices.indexOf(O);
     	
+    	// going through all neighbours of the current visited vertice O
     	ArrayList<Adjacente> adj = O.getAdjacentes();
-    	for (Adjacente adjacente : adj) {
+    	for (Adjacente adjacente : adj) { 
     		Vertice neighbour = adjacente.getV1().equals(O) ? adjacente.getV2() : adjacente.getV1();
     		int indexOfNeighbour = vertices.indexOf(neighbour);
-    		double weight = adjacente.getWeight();
-    		double newDistance = shortestDistance[indexOfCurrent] + weight;
-    		if(newDistance < shortestDistance[indexOfNeighbour]) {
-    			//System.out.println(O.getName() + "_update " +  neighbour.getName() + " from " + shortestDistance[indexOfNeighbour]  + " to " + newDistance);
-    			shortestDistance[indexOfNeighbour] = newDistance;   
-    		}
+			double weight = adjacente.getWeight();
+			double newDistance = shortestDistance[indexOfCurrent] + weight;
+			if(newDistance < shortestDistance[indexOfNeighbour]) { // updating he vertices distance from start if smaller route found
+				shortestDistance[indexOfNeighbour] = newDistance;   
+				parent[indexOfNeighbour] = indexOfCurrent;
+			}    			
+    		
 		}
     	
     	visited[indexOfCurrent] = true;
     	
+    	// Casting the array "shortestDistance" to a Collection
+    	List<Double> listOfShortestDistance = new ArrayList<Double>();
+    	Collections.addAll(listOfShortestDistance, shortestDistance);
+    
+    	// Using a stream to create a sorted array (Ascending) without the 0 
+    	Double[] sortedDistances = listOfShortestDistance.stream().filter(v -> v > 0).sorted(Double::compareTo).toArray(Double[]::new);
     	
-    	List<Double> list = new ArrayList<Double>();
-    	Collections.addAll(list, shortestDistance);
-    	Double[] sortedDistances = list.stream().filter(v -> v > 0).sorted(Double::compareTo).toArray(Double[]::new);
+    	/* Finding the next vertice that has the smallest distance from the start so far
+    	 and was not visited yet. If all vertices have been visited already, return the final value */
     	double minDistance = sortedDistances[0];
-    	int indexOfNext = list.indexOf(minDistance);
-    	while(visited[indexOfNext]) {
-    		list.set(indexOfNext, 0d);
-    		sortedDistances = list.stream().filter(v -> v>0).sorted(Double::compareTo).toArray(Double[]::new);
+    	int indexOfNext = listOfShortestDistance.indexOf(minDistance);
+    	while(visited[indexOfNext]) { 
+    		// Setting the next possible smallest distance to 0 because already visited and sorting the list again
+    		listOfShortestDistance.set(indexOfNext, 0d);
+    		sortedDistances = listOfShortestDistance.stream().filter(v -> v>0).sorted(Double::compareTo).toArray(Double[]::new);
     		if(sortedDistances.length == 0) {
     			return shortestDistance[vertices.indexOf(T)]; 
     		}
     		minDistance = sortedDistances[0];
-    		indexOfNext = list.indexOf(minDistance);
+    		indexOfNext = listOfShortestDistance.indexOf(minDistance);
     	}
     	
-    	return DIJKSRA(vertices.get(indexOfNext), T, visited, shortestDistance, vertices);
-
+    	// visiting a not yet visited vertice with the current lowest distance from start
+    	return DIJKSRA(vertices.get(indexOfNext), T, visited, shortestDistance, vertices, parent, content);
     }
     
 
